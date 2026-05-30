@@ -29,22 +29,27 @@ from .ftp_client import FtpClient
 
 _LOGGER = logging.getLogger(__name__)
 
-STEP_USER_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_FTP_HOST): str,
-        vol.Optional(CONF_FTP_PORT, default=DEFAULT_FTP_PORT): vol.Coerce(int),
-        vol.Required(CONF_FTP_USER): str,
-        vol.Required(CONF_FTP_PASSWORD): str,
-        vol.Optional(CONF_FTP_PATH, default=DEFAULT_FTP_PATH): str,
-        vol.Optional(CONF_FTP_TLS, default=DEFAULT_FTP_TLS): bool,
-        vol.Optional(
-            CONF_BACKUP_FREQUENCY_HOURS, default=DEFAULT_BACKUP_FREQUENCY_HOURS
-        ): vol.All(vol.Coerce(int), vol.Range(min=1, max=8760)),
-        vol.Optional(CONF_MAX_BACKUPS, default=DEFAULT_MAX_BACKUPS): vol.All(
-            vol.Coerce(int), vol.Range(min=1, max=365)
-        ),
-    }
-)
+def _user_schema(prefill: dict | None = None) -> vol.Schema:
+    """Build the user step schema, pre-filling fields from *prefill* when provided."""
+    p = prefill or {}
+    return vol.Schema(
+        {
+            vol.Required(CONF_FTP_HOST, default=p.get(CONF_FTP_HOST, vol.UNDEFINED)): str,
+            vol.Optional(CONF_FTP_PORT, default=p.get(CONF_FTP_PORT, DEFAULT_FTP_PORT)): vol.Coerce(int),
+            vol.Required(CONF_FTP_USER, default=p.get(CONF_FTP_USER, vol.UNDEFINED)): str,
+            vol.Required(CONF_FTP_PASSWORD, default=p.get(CONF_FTP_PASSWORD, vol.UNDEFINED)): str,
+            vol.Optional(CONF_FTP_PATH, default=p.get(CONF_FTP_PATH, DEFAULT_FTP_PATH)): str,
+            vol.Optional(CONF_FTP_TLS, default=p.get(CONF_FTP_TLS, DEFAULT_FTP_TLS)): bool,
+            vol.Optional(
+                CONF_BACKUP_FREQUENCY_HOURS,
+                default=p.get(CONF_BACKUP_FREQUENCY_HOURS, DEFAULT_BACKUP_FREQUENCY_HOURS),
+            ): vol.All(vol.Coerce(int), vol.Range(min=1, max=8760)),
+            vol.Optional(
+                CONF_MAX_BACKUPS,
+                default=p.get(CONF_MAX_BACKUPS, DEFAULT_MAX_BACKUPS),
+            ): vol.All(vol.Coerce(int), vol.Range(min=1, max=365)),
+        }
+    )
 
 
 def _format_listing(probe: dict) -> str:
@@ -106,7 +111,7 @@ class HaFtpBackupConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id="user",
-            data_schema=STEP_USER_SCHEMA,
+            data_schema=_user_schema(user_input),
             errors=errors,
         )
 
