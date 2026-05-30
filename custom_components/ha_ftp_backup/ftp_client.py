@@ -71,6 +71,73 @@ class FtpClient:
         ftp = self._connect()
         ftp.quit()
 
+    def probe_path(self, path: str) -> dict:
+        """Return directory listing info for *path*.
+
+        Tries *path* first; if it doesn't exist falls back to its parent (or
+        root).  Always returns a dict:
+            browsed_path  – the path that was actually listed
+            path_exists   – True when *path* itself was reachable
+            dirs          – sorted list of sub-directory names
+            files         – sorted list of file names
+        """
+        ftp = self._connect()
+        try:
+            path_exists = True
+            try:
+                ftp.cwd(path)
+                browsed_path = path
+            except ftplib.error_perm:
+                path_exists = False
+                parent = str(PurePosixPath(path).parent)
+                try:
+                    ftp.cwd(parent)
+                    browsed_path = parent
+                except ftplib.error_perm:
+                    ftp.cwd("/")
+                    browsed_path = "/"
+
+            dirs: list[str] = []
+            files: list[str] = []
+
+            # Prefer MLSD (RFC 3659) — gives type metadata directly
+            try:
+                for name, facts in ftp.mlsd():
+                    if name in (".", ".."):
+                        continue
+                    if facts.get("type", "") == "dir":
+                        dirs.append(name)
+                    else:
+                        files.append(name)
+            except ftplib.error_perm:
+                # MLSD not supported — fall back to NLST + CWD probe
+                try:
+                    entries = ftp.nlst()
+                except ftplib.error_temp:
+                    entries = []
+                for entry in entries:
+                    name = entry.split("/")[-1]
+                    if name in (".", ".."):
+                        continue
+                    try:
+                        ftp.cwd(entry)
+                        ftp.cwd(browsed_path)
+                        dirs.append(name)
+                    except ftplib.error_perm:
+                        files.append(name)
+
+            return {
+                "browsed_path": browsed_path,
+                "path_exists": path_exists,
+                "dirs": sorted(dirs),
+                "files": sorted(files),
+            }
+        finally:
+            try:
+                ftp.quit()
+            except Exception:
+                pass
+
     def upload_file(self, local_path: str, remote_filename: str) -> None:
         """Upload *local_path* as *remote_filename* under the configured remote path."""
         ftp = self._connect()

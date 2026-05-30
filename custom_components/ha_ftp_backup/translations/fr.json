@@ -14,6 +14,10 @@
           "backup_frequency_hours": "Fréquence de sauvegarde (heures)",
           "max_backups": "Nombre maximum de sauvegardes à conserver"
         }
+      },
+      "confirm": {
+        "title": "Connexion FTP réussie ✓",
+        "description": "Connexion établie. Contenu visible sur le serveur :\n\n```\n{listing}\n```\n\nCliquez sur Valider pour terminer la configuration."
       }
     },
     "error": {
@@ -33,6 +37,10 @@
           "backup_frequency_hours": "Fréquence de sauvegarde (heures)",
           "max_backups": "Nombre maximum de sauvegardes à conserver"
         }
+      },
+      "confirm": {
+        "title": "Contenu du dossier FTP",
+        "description": "Contenu visible sur le serveur :\n\n```\n{listing}\n```\n\nCliquez sur Valider pour enregistrer les options."
       }
     }
   }

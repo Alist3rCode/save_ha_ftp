@@ -14,6 +14,10 @@
           "backup_frequency_hours": "Backup Frequency (hours)",
           "max_backups": "Maximum Backups to Keep"
         }
+      },
+      "confirm": {
+        "title": "FTP Connection Successful ✓",
+        "description": "Connection established. Content visible on the server:\n\n```\n{listing}\n```\n\nClick Submit to finish the setup."
       }
     },
     "error": {
@@ -33,6 +37,10 @@
           "backup_frequency_hours": "Backup Frequency (hours)",
           "max_backups": "Maximum Backups to Keep"
         }
+      },
+      "confirm": {
+        "title": "FTP Directory Content",
+        "description": "Content visible on the server:\n\n```\n{listing}\n```\n\nClick Submit to save the options."
       }
     }
   }
