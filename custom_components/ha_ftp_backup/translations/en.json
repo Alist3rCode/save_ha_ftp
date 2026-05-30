@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Configure FTP Backup",
-        "description": "Enter your FTP server details and backup settings.",
+        "description": "{error_detail}",
         "data": {
           "ftp_host": "FTP Host",
           "ftp_port": "FTP Port",
@@ -21,7 +21,12 @@
       }
     },
     "error": {
-      "cannot_connect": "Unable to connect to the FTP server. Check the host, port and credentials."
+      "cannot_connect": "Unable to connect to the FTP server.",
+      "auth_failed": "Invalid credentials — username or password rejected by the server.",
+      "host_not_found": "Host not found — check the FTP server address (DNS or IP).",
+      "connection_refused": "Connection refused — check the port and that the FTP service is running.",
+      "timeout": "Connection timed out — the server may be unreachable or the port is blocked by a firewall.",
+      "ssl_error": "TLS/FTPS error — disable the FTPS option if your server does not support it."
     },
     "abort": {
       "already_configured": "This FTP server is already configured."

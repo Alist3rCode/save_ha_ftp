@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Configurer la sauvegarde FTP",
-        "description": "Entrez les informations de votre serveur FTP et les paramètres de sauvegarde.",
+        "description": "{error_detail}",
         "data": {
           "ftp_host": "Hôte FTP",
           "ftp_port": "Port FTP",
@@ -21,7 +21,12 @@
       }
     },
     "error": {
-      "cannot_connect": "Impossible de se connecter au serveur FTP. Vérifiez l'hôte, le port et les identifiants."
+      "cannot_connect": "Impossible de se connecter au serveur FTP.",
+      "auth_failed": "Identifiants incorrects — nom d'utilisateur ou mot de passe refusé par le serveur.",
+      "host_not_found": "Hôte introuvable — vérifiez l'adresse du serveur FTP (DNS ou IP).",
+      "connection_refused": "Connexion refusée — vérifiez le port et que le service FTP est démarré.",
+      "timeout": "Délai d'attente dépassé — le serveur est peut-être inaccessible ou le port est filtré par un pare-feu.",
+      "ssl_error": "Erreur TLS/FTPS — désactivez l'option FTPS si votre serveur ne le supporte pas."
     },
     "abort": {
       "already_configured": "Ce serveur FTP est déjà configuré."

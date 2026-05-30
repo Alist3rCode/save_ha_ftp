@@ -1,7 +1,10 @@
 """Config flow for HA FTP Backup."""
 from __future__ import annotations
 
+import ftplib
 import logging
+import socket
+import ssl
 from typing import Any
 
 import voluptuous as vol
@@ -52,6 +55,37 @@ def _user_schema(prefill: dict | None = None) -> vol.Schema:
     )
 
 
+def _classify_ftp_error(err: Exception) -> tuple[str, str]:
+    """Return (error_key, human_detail) for a failed FTP connection attempt."""
+    raw = str(err).strip()
+
+    if isinstance(err, ftplib.error_perm):
+        code = raw[:3] if raw[:3].isdigit() else ""
+        if code in ("530", "331", "332"):
+            return "auth_failed", raw
+        return "cannot_connect", raw
+
+    if isinstance(err, ftplib.error_temp):
+        return "cannot_connect", raw
+
+    if isinstance(err, ssl.SSLError):
+        return "ssl_error", raw
+
+    if isinstance(err, TimeoutError) or isinstance(err, socket.timeout):
+        return "timeout", raw
+
+    if isinstance(err, socket.gaierror):
+        return "host_not_found", raw
+
+    if isinstance(err, ConnectionRefusedError):
+        return "connection_refused", raw
+
+    if isinstance(err, OSError):
+        return "cannot_connect", raw
+
+    return "cannot_connect", raw
+
+
 def _format_listing(probe: dict) -> str:
     """Turn a probe_path result into a human-readable string for placeholders."""
     lines: list[str] = []
@@ -86,6 +120,7 @@ class HaFtpBackupConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         errors: dict[str, str] = {}
+        error_detail = ""
 
         if user_input is not None:
             ftp = FtpClient(
@@ -102,8 +137,9 @@ class HaFtpBackupConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     user_input.get(CONF_FTP_PATH, DEFAULT_FTP_PATH),
                 )
             except Exception as err:  # noqa: BLE001
-                _LOGGER.debug("FTP connection test failed: %s", err)
-                errors["base"] = "cannot_connect"
+                error_key, error_detail = _classify_ftp_error(err)
+                _LOGGER.debug("FTP connection failed (%s): %s", error_key, error_detail)
+                errors["base"] = error_key
             else:
                 self._data = user_input
                 self._listing_text = _format_listing(probe)
@@ -113,6 +149,7 @@ class HaFtpBackupConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user",
             data_schema=_user_schema(user_input),
             errors=errors,
+            description_placeholders={"error_detail": error_detail},
         )
 
     async def async_step_confirm(
