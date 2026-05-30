@@ -1,0 +1,39 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configurer la sauvegarde FTP",
+        "description": "Entrez les informations de votre serveur FTP et les paramètres de sauvegarde.",
+        "data": {
+          "ftp_host": "Hôte FTP",
+          "ftp_port": "Port FTP",
+          "ftp_user": "Utilisateur FTP",
+          "ftp_password": "Mot de passe FTP",
+          "ftp_path": "Dossier distant",
+          "ftp_tls": "Utiliser FTPS (TLS)",
+          "backup_frequency_hours": "Fréquence de sauvegarde (heures)",
+          "max_backups": "Nombre maximum de sauvegardes à conserver"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Impossible de se connecter au serveur FTP. Vérifiez l'hôte, le port et les identifiants."
+    },
+    "abort": {
+      "already_configured": "Ce serveur FTP est déjà configuré."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options de sauvegarde FTP",
+        "data": {
+          "ftp_path": "Dossier distant",
+          "ftp_tls": "Utiliser FTPS (TLS)",
+          "backup_frequency_hours": "Fréquence de sauvegarde (heures)",
+          "max_backups": "Nombre maximum de sauvegardes à conserver"
+        }
+      }
+    }
+  }
+}

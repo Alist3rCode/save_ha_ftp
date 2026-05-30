@@ -1,0 +1,39 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configure FTP Backup",
+        "description": "Enter your FTP server details and backup settings.",
+        "data": {
+          "ftp_host": "FTP Host",
+          "ftp_port": "FTP Port",
+          "ftp_user": "FTP Username",
+          "ftp_password": "FTP Password",
+          "ftp_path": "Remote Directory",
+          "ftp_tls": "Use FTPS (TLS)",
+          "backup_frequency_hours": "Backup Frequency (hours)",
+          "max_backups": "Maximum Backups to Keep"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to connect to the FTP server. Check the host, port and credentials."
+    },
+    "abort": {
+      "already_configured": "This FTP server is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "FTP Backup Options",
+        "data": {
+          "ftp_path": "Remote Directory",
+          "ftp_tls": "Use FTPS (TLS)",
+          "backup_frequency_hours": "Backup Frequency (hours)",
+          "max_backups": "Maximum Backups to Keep"
+        }
+      }
+    }
+  }
+}

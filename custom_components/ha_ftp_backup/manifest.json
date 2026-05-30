@@ -1,0 +1,13 @@
+{
+  "domain": "ha_ftp_backup",
+  "name": "HA FTP Backup",
+  "version": "1.0.0",
+  "documentation": "https://github.com/alist3rcode/save_ha_ftp",
+  "issue_tracker": "https://github.com/alist3rcode/save_ha_ftp/issues",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": ["@alist3rcode"],
+  "config_flow": true,
+  "iot_class": "local_polling",
+  "homeassistant": "2024.1.0"
+}

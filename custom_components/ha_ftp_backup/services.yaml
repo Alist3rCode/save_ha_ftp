@@ -1,0 +1,6 @@
+run_backup:
+  name: Lancer une sauvegarde FTP maintenant
+  description: >
+    Déclenche immédiatement une sauvegarde complète de HAOS et l'envoie
+    vers le serveur FTP configuré.
+  fields: {}
